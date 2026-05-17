@@ -1,4 +1,5 @@
 import { createContext, useContext, useReducer, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import API from '../api/axios';
 
 const AuthContext = createContext();
@@ -47,6 +48,7 @@ function authReducer(state, action) {
 
 export function AuthProvider({ children }) {
   const [state, dispatch] = useReducer(authReducer, initialState);
+  const navigate = useNavigate();
 
   // Load user on mount
   useEffect(() => {
@@ -58,18 +60,23 @@ export function AuthProvider({ children }) {
       }
       try {
         const res = await API.get('/auth/me');
+        const userData = res.data;
+        localStorage.setItem('user', JSON.stringify(userData));
         dispatch({
           type: 'AUTH_SUCCESS',
-          payload: { user: res.data, token },
+          payload: { user: userData, token },
         });
       } catch {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         dispatch({ type: 'AUTH_ERROR', payload: null });
+        if (window.location.pathname !== '/login' && window.location.pathname !== '/signup') {
+          navigate('/login', { replace: true });
+        }
       }
     };
     loadUser();
-  }, []);
+  }, [navigate]);
 
   const signup = async (formData) => {
     try {
@@ -107,6 +114,7 @@ export function AuthProvider({ children }) {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     dispatch({ type: 'LOGOUT' });
+    navigate('/login', { replace: true });
   };
 
   const clearError = () => {
