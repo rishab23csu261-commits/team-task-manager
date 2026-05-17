@@ -4,11 +4,37 @@ import API from '../api/axios';
 
 const AuthContext = createContext();
 
-const initialState = {
-  user: JSON.parse(localStorage.getItem('user')) || null,
-  token: localStorage.getItem('token') || null,
-  loading: true,
-  error: null,
+const clearAuthStorage = () => {
+  const keys = ['token', 'user', 'authToken', 'accessToken', 'currentUser', 'taskflow-user', 'taskflow-token', 'auth-storage'];
+  keys.forEach(key => {
+    try {
+      localStorage.removeItem(key);
+      sessionStorage.removeItem(key);
+    } catch (e) {
+      // ignore
+    }
+  });
+};
+
+const getInitialState = () => {
+  let user = null;
+  let token = null;
+  try {
+    user = JSON.parse(localStorage.getItem('user')) || null;
+    token = localStorage.getItem('token') || null;
+    if (!user || !user._id || !token) {
+      user = null;
+      token = null;
+    }
+  } catch (e) {
+    clearAuthStorage();
+  }
+  return {
+    user,
+    token,
+    loading: true,
+    error: null,
+  };
 };
 
 function authReducer(state, action) {
@@ -47,7 +73,7 @@ function authReducer(state, action) {
 }
 
 export function AuthProvider({ children }) {
-  const [state, dispatch] = useReducer(authReducer, initialState);
+  const [state, dispatch] = useReducer(authReducer, getInitialState());
   const navigate = useNavigate();
 
   // Load user on mount
@@ -55,20 +81,23 @@ export function AuthProvider({ children }) {
     const loadUser = async () => {
       const token = localStorage.getItem('token');
       if (!token) {
+        clearAuthStorage();
         dispatch({ type: 'SET_LOADING', payload: false });
         return;
       }
       try {
         const res = await API.get('/auth/me');
         const userData = res.data;
+        if (!userData || !userData._id) {
+          throw new Error('Corrupted user object');
+        }
         localStorage.setItem('user', JSON.stringify(userData));
         dispatch({
           type: 'AUTH_SUCCESS',
           payload: { user: userData, token },
         });
       } catch {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
+        clearAuthStorage();
         dispatch({ type: 'AUTH_ERROR', payload: null });
         if (window.location.pathname !== '/login' && window.location.pathname !== '/signup') {
           navigate('/login', { replace: true });
@@ -83,6 +112,7 @@ export function AuthProvider({ children }) {
       dispatch({ type: 'SET_LOADING', payload: true });
       const res = await API.post('/auth/signup', formData);
       const { token, ...user } = res.data;
+      clearAuthStorage();
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
       dispatch({ type: 'AUTH_SUCCESS', payload: { user, token } });
@@ -99,6 +129,7 @@ export function AuthProvider({ children }) {
       dispatch({ type: 'SET_LOADING', payload: true });
       const res = await API.post('/auth/login', formData);
       const { token, ...user } = res.data;
+      clearAuthStorage();
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
       dispatch({ type: 'AUTH_SUCCESS', payload: { user, token } });
@@ -111,8 +142,7 @@ export function AuthProvider({ children }) {
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    clearAuthStorage();
     dispatch({ type: 'LOGOUT' });
     navigate('/login', { replace: true });
   };

@@ -1,7 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { useAuth } from './context/AuthContext';
 import AppLayout from './components/layout/AppLayout';
 import PrivateRoute from './components/PrivateRoute';
+import PublicRoute from './components/PublicRoute';
 
 // Pages
 import Login from './pages/Login';
@@ -12,20 +12,16 @@ import ProjectDetail from './pages/ProjectDetail';
 import Tasks from './pages/Tasks';
 
 function App() {
-  const { user, loading } = useAuth();
-
-  if (loading) return null; // Or a global splash screen
-
   return (
     <Routes>
       {/* Public Routes */}
       <Route 
         path="/login" 
-        element={user ? <Navigate to="/dashboard" replace /> : <Login />} 
+        element={<PublicRoute><Login /></PublicRoute>} 
       />
       <Route 
         path="/signup" 
-        element={user ? <Navigate to="/dashboard" replace /> : <Signup />} 
+        element={<PublicRoute><Signup /></PublicRoute>} 
       />
 
       {/* Protected App Routes */}
@@ -38,7 +34,7 @@ function App() {
       </Route>
 
       {/* Catch all */}
-      <Route path="*" element={<Navigate to="/dashboard" replace />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }
