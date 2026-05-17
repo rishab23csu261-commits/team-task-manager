@@ -177,16 +177,20 @@ export default function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse
                   {user?.role || 'Member'}
                 </Badge>
               </div>
-              <DropdownMenuSeparator className="bg-[#065f46] my-1" />
-              <DropdownMenuItem
-                onClick={logout}
-                className="text-red-400 focus:bg-red-500/20 focus:text-red-300 cursor-pointer font-bold rounded-xl p-2.5 m-0.5 transition-colors flex items-center gap-2.5"
-              >
-                <LogOut className="w-4 h-4" />
-                <span>Sign out of Workspace</span>
-              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+
+          {/* Logout button lives OUTSIDE the dropdown portal to avoid Base-UI portal crash */}
+          <button
+            type="button"
+            onClick={logout}
+            className={`mt-1.5 w-full flex items-center gap-2.5 px-3 py-2.5 rounded-2xl text-red-400 hover:text-red-300 hover:bg-red-500/15 transition-all duration-200 font-bold text-xs ${
+              isCollapsed ? 'justify-center' : ''
+            }`}
+          >
+            <LogOut className="w-4 h-4 shrink-0" />
+            {!isCollapsed && <span>Sign out of Workspace</span>}
+          </button>
         </div>
       </aside>
     </TooltipProvider>

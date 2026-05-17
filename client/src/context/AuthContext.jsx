@@ -1,165 +1,151 @@
-import { createContext, useContext, useReducer, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import API from '../api/axios';
 
-const AuthContext = createContext();
+const AuthContext = createContext(null);
 
-const clearAuthStorage = () => {
-  const keys = ['token', 'user', 'authToken', 'accessToken', 'currentUser', 'taskflow-user', 'taskflow-token', 'auth-storage'];
-  keys.forEach(key => {
-    try {
-      localStorage.removeItem(key);
-      sessionStorage.removeItem(key);
-    } catch (e) {
-      // ignore
-    }
+// Purge every possible auth storage key
+const clearAllAuthStorage = () => {
+  const keys = [
+    'token', 'user', 'authToken', 'accessToken',
+    'currentUser', 'taskflow-user', 'taskflow-token', 'auth-storage',
+  ];
+  keys.forEach((k) => {
+    try { localStorage.removeItem(k); } catch (_) {}
+    try { sessionStorage.removeItem(k); } catch (_) {}
   });
+  try { sessionStorage.clear(); } catch (_) {}
 };
 
-const getInitialState = () => {
-  let user = null;
-  let token = null;
+// Safely read stored token and user, discard if malformed
+const readStorage = () => {
   try {
-    user = JSON.parse(localStorage.getItem('user')) || null;
-    token = localStorage.getItem('token') || null;
-    if (!user || !user._id || !token) {
-      user = null;
-      token = null;
+    const token = localStorage.getItem('token');
+    const raw   = localStorage.getItem('user');
+    const user  = raw ? JSON.parse(raw) : null;
+    if (!token || !user || !user._id) {
+      clearAllAuthStorage();
+      return { token: null, user: null };
     }
-  } catch (e) {
-    clearAuthStorage();
+    return { token, user };
+  } catch (_) {
+    clearAllAuthStorage();
+    return { token: null, user: null };
   }
-  return {
-    user,
-    token,
-    loading: true,
-    error: null,
-  };
 };
-
-function authReducer(state, action) {
-  switch (action.type) {
-    case 'AUTH_SUCCESS':
-      return {
-        ...state,
-        user: action.payload.user,
-        token: action.payload.token,
-        loading: false,
-        error: null,
-      };
-    case 'AUTH_ERROR':
-      return {
-        ...state,
-        user: null,
-        token: null,
-        loading: false,
-        error: action.payload,
-      };
-    case 'LOGOUT':
-      return {
-        ...state,
-        user: null,
-        token: null,
-        loading: false,
-        error: null,
-      };
-    case 'SET_LOADING':
-      return { ...state, loading: action.payload };
-    case 'CLEAR_ERROR':
-      return { ...state, error: null };
-    default:
-      return state;
-  }
-}
 
 export function AuthProvider({ children }) {
-  const [state, dispatch] = useReducer(authReducer, getInitialState());
   const navigate = useNavigate();
+  const initial = readStorage();
 
-  // Load user on mount
+  const [user,    setUser]    = useState(initial.user);
+  const [token,   setToken]   = useState(initial.token);
+  const [loading, setLoading] = useState(true);
+  const [error,   setError]   = useState(null);
+
+  // On mount, verify token with backend
   useEffect(() => {
-    const loadUser = async () => {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        clearAuthStorage();
-        dispatch({ type: 'SET_LOADING', payload: false });
+    const verifyToken = async () => {
+      const storedToken = localStorage.getItem('token');
+
+      if (!storedToken) {
+        clearAllAuthStorage();
+        setUser(null);
+        setToken(null);
+        setLoading(false);
         return;
       }
+
       try {
-        const res = await API.get('/auth/me');
-        const userData = res.data;
-        if (!userData || !userData._id) {
-          throw new Error('Corrupted user object');
-        }
-        localStorage.setItem('user', JSON.stringify(userData));
-        dispatch({
-          type: 'AUTH_SUCCESS',
-          payload: { user: userData, token },
-        });
+        const { data } = await API.get('/auth/me');
+        if (!data || !data._id) throw new Error('Bad user object');
+        localStorage.setItem('user', JSON.stringify(data));
+        setUser(data);
+        setToken(storedToken);
       } catch {
-        clearAuthStorage();
-        dispatch({ type: 'AUTH_ERROR', payload: null });
-        if (window.location.pathname !== '/login' && window.location.pathname !== '/signup') {
+        clearAllAuthStorage();
+        setUser(null);
+        setToken(null);
+        // Redirect only if not already on a public page
+        if (
+          window.location.pathname !== '/login' &&
+          window.location.pathname !== '/signup'
+        ) {
           navigate('/login', { replace: true });
         }
+      } finally {
+        setLoading(false);
       }
     };
-    loadUser();
+
+    verifyToken();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const login = useCallback(async (formData) => {
+    try {
+      setLoading(true);
+      setError(null);
+      const { data } = await API.post('/auth/login', formData);
+      const { token: newToken, ...userData } = data;
+      clearAllAuthStorage();
+      localStorage.setItem('token', newToken);
+      localStorage.setItem('user', JSON.stringify(userData));
+      setToken(newToken);
+      setUser(userData);
+      return { success: true };
+    } catch (err) {
+      const message = err.response?.data?.message || 'Login failed. Please try again.';
+      setError(message);
+      return { success: false, message };
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const signup = useCallback(async (formData) => {
+    try {
+      setLoading(true);
+      setError(null);
+      const { data } = await API.post('/auth/signup', formData);
+      const { token: newToken, ...userData } = data;
+      clearAllAuthStorage();
+      localStorage.setItem('token', newToken);
+      localStorage.setItem('user', JSON.stringify(userData));
+      setToken(newToken);
+      setUser(userData);
+      return { success: true };
+    } catch (err) {
+      const message = err.response?.data?.message || 'Signup failed. Please try again.';
+      setError(message);
+      return { success: false, message };
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  // -----------------------------------------------------------------------
+  // LOGOUT — the key fix:
+  // 1. Wipe storage FIRST so PrivateRoute immediately sees no token.
+  // 2. Reset state synchronously so React re-renders PrivateRoute → /login.
+  // 3. Defer navigate() one tick so any open dropdown portals can unmount
+  //    cleanly before we swap the route tree.
+  // -----------------------------------------------------------------------
+  const logout = useCallback(() => {
+    clearAllAuthStorage();
+    setToken(null);
+    setUser(null);
+    setError(null);
+    // Tiny timeout lets the dropdown portal close gracefully before navigation
+    setTimeout(() => {
+      navigate('/login', { replace: true });
+    }, 0);
   }, [navigate]);
 
-  const signup = async (formData) => {
-    try {
-      dispatch({ type: 'SET_LOADING', payload: true });
-      const res = await API.post('/auth/signup', formData);
-      const { token, ...user } = res.data;
-      clearAuthStorage();
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(user));
-      dispatch({ type: 'AUTH_SUCCESS', payload: { user, token } });
-      return { success: true };
-    } catch (error) {
-      const message = error.response?.data?.message || 'Signup failed';
-      dispatch({ type: 'AUTH_ERROR', payload: message });
-      return { success: false, message };
-    }
-  };
-
-  const login = async (formData) => {
-    try {
-      dispatch({ type: 'SET_LOADING', payload: true });
-      const res = await API.post('/auth/login', formData);
-      const { token, ...user } = res.data;
-      clearAuthStorage();
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(user));
-      dispatch({ type: 'AUTH_SUCCESS', payload: { user, token } });
-      return { success: true };
-    } catch (error) {
-      const message = error.response?.data?.message || 'Login failed';
-      dispatch({ type: 'AUTH_ERROR', payload: message });
-      return { success: false, message };
-    }
-  };
-
-  const logout = () => {
-    clearAuthStorage();
-    dispatch({ type: 'LOGOUT' });
-    navigate('/login', { replace: true });
-  };
-
-  const clearError = () => {
-    dispatch({ type: 'CLEAR_ERROR' });
-  };
+  const clearError = useCallback(() => setError(null), []);
 
   return (
     <AuthContext.Provider
-      value={{
-        ...state,
-        signup,
-        login,
-        logout,
-        clearError,
-      }}
+      value={{ user, token, loading, error, login, signup, logout, clearError }}
     >
       {children}
     </AuthContext.Provider>
@@ -167,9 +153,7 @@ export function AuthProvider({ children }) {
 }
 
 export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error('useAuth must be used within an AuthProvider');
+  return ctx;
 };

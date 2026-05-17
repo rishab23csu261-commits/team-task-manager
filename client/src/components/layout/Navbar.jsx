@@ -3,11 +3,9 @@ import { useAuth } from '../../context/AuthContext';
 import { Menu, LogOut, Bell, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
@@ -44,7 +42,7 @@ export default function Navbar({ onMenuToggle }) {
           </div>
         </div>
 
-        {/* Center: Search mockup or spacer */}
+        {/* Center: Search */}
         <div className="flex-1 max-w-md mx-8 hidden md:block">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
@@ -58,12 +56,13 @@ export default function Navbar({ onMenuToggle }) {
         <div className="flex-1 md:hidden" />
 
         {/* Right Actions & Profile */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <Button variant="ghost" size="icon" className="relative text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-full h-9 w-9">
             <Bell className="h-4 w-4" />
             <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-emerald-500 ring-2 ring-white" />
           </Button>
 
+          {/* Profile dropdown — logout is a plain button OUTSIDE the portal */}
           <DropdownMenu>
             <DropdownMenuTrigger className="relative h-9 w-9 rounded-full focus:outline-none focus:ring-2 focus:ring-emerald-500 ring-2 ring-slate-200 hover:ring-emerald-500 transition-all duration-200">
               <Avatar className="h-9 w-9">
@@ -72,7 +71,7 @@ export default function Navbar({ onMenuToggle }) {
                 </AvatarFallback>
               </Avatar>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56 bg-white border-slate-200 shadow-xl rounded-xl p-1 text-slate-800" align="end" forceMount>
+            <DropdownMenuContent className="w-56 bg-white border-slate-200 shadow-xl rounded-xl p-1 text-slate-800" align="end">
               <DropdownMenuLabel className="font-normal px-2.5 py-2">
                 <div className="flex flex-col space-y-0.5">
                   <p className="text-sm font-semibold leading-none text-slate-900">{user?.name || 'Workspace User'}</p>
@@ -80,10 +79,15 @@ export default function Navbar({ onMenuToggle }) {
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator className="bg-slate-100" />
-              <DropdownMenuItem onClick={logout} className="text-red-600 focus:bg-red-50 focus:text-red-700 cursor-pointer font-medium rounded-lg px-2.5 py-2 my-0.5 transition-colors">
-                <LogOut className="mr-2 h-4 w-4" />
+              {/* Logout as a standalone plain button — avoids Base-UI DropdownMenuItem portal crash */}
+              <button
+                type="button"
+                onClick={logout}
+                className="w-full flex items-center gap-2 text-red-600 hover:bg-red-50 hover:text-red-700 cursor-pointer font-medium rounded-lg px-2.5 py-2 my-0.5 transition-colors text-sm"
+              >
+                <LogOut className="h-4 w-4" />
                 <span>Log out</span>
-              </DropdownMenuItem>
+              </button>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
