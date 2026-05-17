@@ -98,7 +98,7 @@ export default function Dashboard() {
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
-              Welcome back, {user?.name?.split(' ')[0]} <span className="animate-bounce inline-block">👋</span>
+              Welcome back, {user?.name ? user.name.split(' ')[0] : 'User'} <span className="animate-bounce inline-block">👋</span>
             </h1>
           </div>
           <p className="text-slate-500 text-sm mt-1">Here is the latest snapshot of your team workspace & active projects.</p>
