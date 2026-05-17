@@ -1,6 +1,6 @@
 import { NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { LayoutDashboard, FolderKanban, CheckSquare, Layers, LogOut, ChevronRight, Settings } from 'lucide-react';
+import { LayoutDashboard, FolderKanban, CheckSquare, Layers, LogOut, ChevronRight, PanelLeftClose, PanelLeft, Shield, UserCircle } from 'lucide-react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -11,6 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
 
 const navItems = [
   {
@@ -30,100 +31,164 @@ const navItems = [
   },
 ];
 
-export default function Sidebar({ isOpen, onClose }) {
+export default function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse }) {
   const { user, logout } = useAuth();
   const location = useLocation();
 
   return (
-    <>
+    <TooltipProvider delay={100}>
       {/* Overlay for mobile */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/60 backdrop-blur-xs z-40 lg:hidden transition-opacity"
+          className="fixed inset-0 bg-black/60 backdrop-blur-xs z-40 lg:hidden transition-opacity animate-fade-in"
           onClick={onClose}
         />
       )}
 
-      {/* Sidebar */}
+      {/* Sidebar Container */}
       <aside
-        className={`fixed top-0 left-0 z-50 h-full w-64 bg-gradient-to-b from-[#022c22] via-[#043e31] to-[#022c22] text-slate-100 border-r border-[#065f46] transform transition-transform duration-300 ease-in-out lg:translate-x-0 flex flex-col shadow-2xl ${
-          isOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}
+        className={`fixed top-0 left-0 z-50 h-full bg-gradient-to-b from-[#022c22] via-[#043e31] to-[#022c22] text-slate-100 border-r border-[#065f46] transform transition-all duration-300 ease-in-out flex flex-col shadow-2xl ${
+          isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+        } ${isCollapsed ? 'w-20' : 'w-72'}`}
       >
-        {/* Logo */}
-        <div className="flex items-center gap-3 px-6 h-16 border-b border-[#065f46]/70 bg-black/10">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#10b981] to-[#34d399] flex items-center justify-center shadow-lg shadow-[#10b981]/20">
-            <Layers className="w-5 h-5 text-[#022c22] stroke-[2.5]" />
+        {/* Branding & Collapse Toggle Section */}
+        <div className="flex items-center justify-between px-5 h-16 border-b border-[#065f46]/70 bg-black/15 shrink-0">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-400 to-teal-600 flex items-center justify-center shadow-lg shadow-emerald-500/20 shrink-0">
+              <Layers className="w-5 h-5 text-[#022c22] stroke-[2.5]" />
+            </div>
+            {!isCollapsed && (
+              <div className="min-w-0 animate-fade-in transition-opacity duration-200">
+                <h1 className="text-xl font-black bg-gradient-to-r from-white via-slate-100 to-emerald-300 bg-clip-text text-transparent tracking-tight truncate">
+                  TaskFlow<span className="text-emerald-400">.</span>
+                </h1>
+                <span className="text-[10px] uppercase font-extrabold text-emerald-400/80 tracking-widest block -mt-1 truncate">
+                  SaaS Workspace
+                </span>
+              </div>
+            )}
           </div>
-          <div>
-            <h1 className="text-xl font-bold bg-gradient-to-r from-white via-slate-200 to-[#6ee7b7] bg-clip-text text-transparent tracking-tight">TaskFlow</h1>
-            <span className="text-[10px] uppercase font-semibold text-[#6ee7b7]/80 tracking-widest block -mt-1">Workspace</span>
-          </div>
+
+          {/* Desktop Expand/Collapse Button */}
+          <button
+            type="button"
+            onClick={onToggleCollapse}
+            className="hidden lg:flex items-center justify-center w-8 h-8 rounded-lg text-slate-400 hover:text-white hover:bg-[#065f46]/60 transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-500 shrink-0 ml-1"
+            title={isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
+          >
+            {isCollapsed ? <PanelLeft className="w-5 h-5" /> : <PanelLeftClose className="w-5 h-5" />}
+          </button>
         </div>
 
-        {/* Navigation */}
-        <nav className="px-3 py-6 flex-1 space-y-1">
-          <p className="text-[11px] uppercase tracking-wider text-[#6ee7b7]/60 font-semibold px-3 mb-3">Core Navigation</p>
-          <ul className="space-y-1.5">
-            {navItems.map((item) => (
-              <li key={item.path}>
-                <NavLink
-                  to={item.path}
-                  onClick={onClose}
-                  className={({ isActive }) =>
-                    `group flex items-center gap-3.5 px-3.5 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
+        {/* Navigation Section */}
+        <nav className="px-3.5 py-6 flex-1 space-y-6 overflow-y-auto overflow-x-hidden custom-scrollbar">
+          <div className="space-y-2">
+            {!isCollapsed ? (
+              <p className="text-[11px] uppercase tracking-wider text-emerald-400/70 font-extrabold px-3 shrink-0 animate-fade-in">
+                Core Workspace
+              </p>
+            ) : (
+              <div className="h-4 border-b border-emerald-500/20 w-8 mx-auto mb-4 shrink-0" />
+            )}
+
+            <ul className="space-y-2">
+              {navItems.map((item) => {
+                const isActive = location.pathname.startsWith(item.path);
+
+                const linkContent = (
+                  <NavLink
+                    to={item.path}
+                    onClick={() => { if (isOpen) onClose(); }}
+                    className={`group flex items-center gap-4 px-4 py-3.5 rounded-2xl text-sm font-semibold transition-all duration-200 relative overflow-hidden ${
                       isActive
-                        ? 'bg-gradient-to-r from-[#10b981] to-[#059669] text-white shadow-lg shadow-[#059669]/30 font-semibold translate-x-1'
+                        ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-xl shadow-emerald-500/20 translate-x-1 font-bold'
                         : 'text-slate-300 hover:text-white hover:bg-[#065f46]/50 hover:translate-x-0.5'
-                    }`
-                  }
-                >
-                  {item.icon}
-                  <span className="flex-1">{item.label}</span>
-                </NavLink>
-              </li>
-            ))}
-          </ul>
+                    } ${isCollapsed ? 'justify-center px-0 translate-x-0 hover:translate-x-0' : ''}`}
+                  >
+                    <span className="relative z-10 shrink-0">{item.icon}</span>
+                    {!isCollapsed && <span className="flex-1 truncate relative z-10">{item.label}</span>}
+                    {isActive && !isCollapsed && (
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2 w-1.5 h-6 rounded-full bg-emerald-300 animate-pulse" />
+                    )}
+                  </NavLink>
+                );
+
+                if (isCollapsed) {
+                  return (
+                    <li key={item.path}>
+                      <Tooltip>
+                        <TooltipTrigger asChild>{linkContent}</TooltipTrigger>
+                        <TooltipContent side="right" sideOffset={12} className="bg-slate-900 border-slate-800 text-white font-bold text-xs py-1.5 px-3 rounded-xl shadow-2xl z-50">
+                          {item.label}
+                        </TooltipContent>
+                      </Tooltip>
+                    </li>
+                  );
+                }
+
+                return <li key={item.path}>{linkContent}</li>;
+              })}
+            </ul>
+          </div>
         </nav>
 
-        {/* User info at bottom with dropdown */}
-        <div className="p-4 border-t border-[#065f46]/70 bg-black/15 mt-auto">
+        {/* User Profile Section */}
+        <div className="p-3 border-t border-[#065f46]/70 bg-black/20 shrink-0 mt-auto">
           <DropdownMenu>
-            <DropdownMenuTrigger className="w-full flex items-center gap-3 p-2 rounded-xl hover:bg-[#065f46]/60 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#10b981]">
-              <Avatar className="h-10 w-10 ring-2 ring-[#10b981]/30">
-                <AvatarFallback className="bg-gradient-to-tr from-[#10b981] to-[#34d399] text-[#022c22] font-bold text-sm">
-                  {user?.name?.charAt(0).toUpperCase()}
+            <DropdownMenuTrigger
+              className={`w-full flex items-center p-2 rounded-2xl hover:bg-[#065f46]/60 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 group ${
+                isCollapsed ? 'justify-center' : 'gap-3'
+              }`}
+            >
+              <Avatar className="h-10 w-10 ring-2 ring-emerald-500/40 group-hover:ring-emerald-400 transition-all shadow-md shrink-0">
+                <AvatarFallback className="bg-gradient-to-tr from-emerald-400 to-teal-600 text-[#022c22] font-black text-sm uppercase">
+                  {user?.name?.charAt(0) || 'U'}
                 </AvatarFallback>
               </Avatar>
-              <div className="flex-1 min-w-0 text-left">
-                <p className="text-sm font-semibold truncate text-white">{user?.name}</p>
-                <p className="text-xs truncate text-[#6ee7b7]/80">{user?.email}</p>
-              </div>
-              <ChevronRight className="w-4 h-4 text-[#6ee7b7]/60 ml-auto" />
+
+              {!isCollapsed && (
+                <>
+                  <div className="flex-1 min-w-0 text-left animate-fade-in transition-opacity duration-200">
+                    <p className="text-sm font-extrabold truncate text-white">{user?.name || 'Workspace User'}</p>
+                    <p className="text-[11px] truncate text-emerald-400/80 font-medium">{user?.email || 'team@workspace.com'}</p>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-emerald-400/60 shrink-0 ml-1 group-hover:translate-x-0.5 transition-transform" />
+                </>
+              )}
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56 bg-[#043e31] border-[#065f46] text-slate-100 shadow-2xl" align="end" side="right" sideOffset={12}>
-              <DropdownMenuLabel className="font-normal border-b border-[#065f46] pb-2">
+
+            <DropdownMenuContent
+              className="w-60 bg-[#043e31] border-[#065f46] text-slate-100 shadow-2xl rounded-2xl p-2 z-50"
+              align="end"
+              side="right"
+              sideOffset={16}
+            >
+              <DropdownMenuLabel className="font-normal border-b border-[#065f46] pb-3 mb-1 px-2 pt-1.5">
                 <div className="flex flex-col space-y-1">
-                  <p className="text-sm font-semibold text-white leading-none">{user?.name}</p>
-                  <p className="text-xs text-[#6ee7b7]/80 leading-none">{user?.email}</p>
+                  <p className="text-sm font-black text-white leading-none">{user?.name || 'Workspace User'}</p>
+                  <p className="text-xs text-emerald-300/80 leading-none">{user?.email || 'team@workspace.com'}</p>
                 </div>
               </DropdownMenuLabel>
-              <div className="py-1">
-                <div className="px-2 py-1.5 flex items-center gap-2 text-xs text-[#6ee7b7]">
-                  <Badge variant="outline" className="border-[#10b981] text-[#10b981] text-[10px] uppercase font-bold tracking-wider">
-                    {user?.role || 'Member'}
-                  </Badge>
-                </div>
+              <div className="py-1.5 px-2 flex items-center justify-between">
+                <span className="text-xs text-slate-300 font-bold flex items-center gap-1.5">
+                  <Shield className="w-3.5 h-3.5 text-emerald-400" /> Role
+                </span>
+                <Badge variant="outline" className="border-emerald-500 bg-emerald-500/10 text-emerald-400 text-[10px] uppercase font-black px-2.5 py-0.5 rounded-full tracking-wider">
+                  {user?.role || 'Member'}
+                </Badge>
               </div>
-              <DropdownMenuSeparator className="bg-[#065f46]" />
-              <DropdownMenuItem onClick={logout} className="text-red-400 focus:bg-red-500/20 focus:text-red-300 cursor-pointer font-medium rounded-lg m-1">
-                <LogOut className="mr-2 h-4 w-4" />
-                <span>Log out</span>
+              <DropdownMenuSeparator className="bg-[#065f46] my-1" />
+              <DropdownMenuItem
+                onClick={logout}
+                className="text-red-400 focus:bg-red-500/20 focus:text-red-300 cursor-pointer font-bold rounded-xl p-2.5 m-0.5 transition-colors flex items-center gap-2.5"
+              >
+                <LogOut className="w-4 h-4" />
+                <span>Sign out of Workspace</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
       </aside>
-    </>
+    </TooltipProvider>
   );
 }

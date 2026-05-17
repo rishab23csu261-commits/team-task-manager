@@ -4,13 +4,23 @@ import Sidebar from './Sidebar';
 import Navbar from './Navbar';
 
 export default function AppLayout() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false); // Mobile drawer state
+  const [isCollapsed, setIsCollapsed] = useState(false); // Desktop collapse state
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans selection:bg-emerald-500 selection:text-white">
-      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      <Sidebar
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+        isCollapsed={isCollapsed}
+        onToggleCollapse={() => setIsCollapsed(!isCollapsed)}
+      />
 
-      <div className="lg:ml-64 min-h-screen flex flex-col transition-all duration-300">
+      <div
+        className={`min-h-screen flex flex-col transition-all duration-300 ease-in-out ${
+          isCollapsed ? 'lg:ml-20' : 'lg:ml-72'
+        }`}
+      >
         <Navbar onMenuToggle={() => setSidebarOpen(!sidebarOpen)} />
 
         <main className="flex-1 p-4 sm:p-6 lg:p-8 bg-slate-50/50">
