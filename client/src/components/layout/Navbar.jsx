@@ -67,15 +67,15 @@ export default function Navbar({ onMenuToggle }) {
             <DropdownMenuTrigger className="relative h-9 w-9 rounded-full focus:outline-none focus:ring-2 focus:ring-emerald-500 ring-2 ring-slate-200 hover:ring-emerald-500 transition-all duration-200">
               <Avatar className="h-9 w-9">
                 <AvatarFallback className="bg-emerald-600 text-white font-semibold text-sm">
-                  {user?.name?.charAt(0).toUpperCase()}
+                  {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
                 </AvatarFallback>
               </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56 bg-white border-slate-200 shadow-xl rounded-xl p-1 text-slate-800" align="end" forceMount>
               <DropdownMenuLabel className="font-normal px-2.5 py-2">
                 <div className="flex flex-col space-y-0.5">
-                  <p className="text-sm font-semibold leading-none text-slate-900">{user?.name}</p>
-                  <p className="text-xs leading-none text-slate-500">{user?.email}</p>
+                  <p className="text-sm font-semibold leading-none text-slate-900">{user?.name || 'Workspace User'}</p>
+                  <p className="text-xs leading-none text-slate-500">{user?.email || ''}</p>
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator className="bg-slate-100" />

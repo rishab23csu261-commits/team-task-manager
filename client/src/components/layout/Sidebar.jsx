@@ -142,7 +142,7 @@ export default function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse
             >
               <Avatar className="h-10 w-10 ring-2 ring-emerald-500/40 group-hover:ring-emerald-400 transition-all shadow-md shrink-0">
                 <AvatarFallback className="bg-gradient-to-tr from-emerald-400 to-teal-600 text-[#022c22] font-black text-sm uppercase">
-                  {user?.name?.charAt(0) || 'U'}
+                  {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
                 </AvatarFallback>
               </Avatar>
 
