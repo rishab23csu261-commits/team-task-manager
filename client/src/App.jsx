@@ -4,13 +4,15 @@ import PrivateRoute from './components/PrivateRoute';
 import PublicRoute from './components/PublicRoute';
 
 // Pages
-import Login from './pages/Login';
-import Signup from './pages/Signup';
-import Dashboard from './pages/Dashboard';
-import Projects from './pages/Projects';
-import ProjectDetail from './pages/ProjectDetail';
-import Tasks from './pages/Tasks';
-import TaskDetail from './pages/TaskDetail';
+import Login          from './pages/Login';
+import Signup         from './pages/Signup';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword  from './pages/ResetPassword';
+import Dashboard      from './pages/Dashboard';
+import Projects       from './pages/Projects';
+import ProjectDetail  from './pages/ProjectDetail';
+import Tasks          from './pages/Tasks';
+import TaskDetail     from './pages/TaskDetail';
 
 function App() {
   return (
@@ -23,6 +25,14 @@ function App() {
       <Route 
         path="/signup" 
         element={<PublicRoute><Signup /></PublicRoute>} 
+      />
+      <Route 
+        path="/forgot-password" 
+        element={<PublicRoute><ForgotPassword /></PublicRoute>} 
+      />
+      <Route 
+        path="/reset-password/:token" 
+        element={<ResetPassword />} 
       />
 
       {/* Protected App Routes */}

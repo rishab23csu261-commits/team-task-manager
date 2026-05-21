@@ -5,11 +5,12 @@ const connectDB = require('./config/db');
 const errorHandler = require('./utils/errorHandler');
 
 // Route imports
-const authRoutes      = require('./routes/auth');
-const projectRoutes   = require('./routes/projects');
-const taskRoutes      = require('./routes/tasks');
-const dashboardRoutes = require('./routes/dashboard');
-const userRoutes      = require('./routes/users');
+const authRoutes          = require('./routes/auth');
+const passwordResetRoutes = require('./routes/passwordReset');
+const projectRoutes       = require('./routes/projects');
+const taskRoutes          = require('./routes/tasks');
+const dashboardRoutes     = require('./routes/dashboard');
+const userRoutes          = require('./routes/users');
 
 const app = express();
 
@@ -46,6 +47,7 @@ app.use(express.json());
 
 // ── Routes ──────────────────────────────────────────────────────────────────
 app.use('/api/auth',      authRoutes);
+app.use('/api/auth',      passwordResetRoutes);
 app.use('/api/projects',  projectRoutes);
 app.use('/api/tasks',     taskRoutes);
 app.use('/api/dashboard', dashboardRoutes);
