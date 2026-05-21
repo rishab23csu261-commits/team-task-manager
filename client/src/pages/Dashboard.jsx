@@ -42,10 +42,10 @@ export default function Dashboard() {
 
   // Stat Cards Configuration
   const statCards = [
-    { label: 'Total Projects', value: stats.totalProjects || 0, icon: FolderKanban, color: 'text-emerald-600', bg: 'bg-emerald-50 border-emerald-100', trend: '+12% this month' },
-    { label: 'Completed Tasks', value: stats.completedTasks || 0, icon: CheckCircle2, color: 'text-teal-600', bg: 'bg-teal-50 border-teal-100', trend: '89% completion' },
-    { label: 'In Progress', value: stats.inProgressTasks || 0, icon: Clock, color: 'text-amber-600', bg: 'bg-amber-50 border-amber-100', trend: 'Active workflow' },
-    { label: 'Overdue Tasks', value: stats.overdueTasks || 0, icon: AlertCircle, color: 'text-red-600', bg: 'bg-red-50 border-red-100', trend: 'Needs attention' },
+    { label: 'Total Projects', value: stats.totalProjects || 0, icon: FolderKanban, color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-950/20 border-emerald-100 dark:border-emerald-900/30', trend: '+12% this month' },
+    { label: 'Completed Tasks', value: stats.completedTasks || 0, icon: CheckCircle2, color: 'text-teal-600 dark:text-teal-400', bg: 'bg-teal-50 dark:bg-teal-950/20 border-teal-100 dark:border-teal-900/30', trend: '89% completion' },
+    { label: 'In Progress', value: stats.inProgressTasks || 0, icon: Clock, color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-50 dark:bg-amber-950/20 border-amber-100 dark:border-amber-900/30', trend: 'Active workflow' },
+    { label: 'Overdue Tasks', value: stats.overdueTasks || 0, icon: AlertCircle, color: 'text-red-600 dark:text-red-400', bg: 'bg-red-50 dark:bg-red-950/20 border-red-100 dark:border-red-900/30', trend: 'Needs attention' },
   ];
 
   // Recharts Donut Data
@@ -94,18 +94,18 @@ export default function Dashboard() {
   return (
     <div className="space-y-8 animate-fade-in pb-12">
       {/* Welcome Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-card dark:bg-slate-900/60 p-6 rounded-2xl border border-border shadow-xs backdrop-blur-md">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100">
               Welcome back, {user?.name ? user.name.split(' ')[0] : 'User'} <span className="animate-bounce inline-block">👋</span>
             </h1>
           </div>
-          <p className="text-slate-500 text-sm mt-1">Here is the latest snapshot of your team workspace & active projects.</p>
+          <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Here is the latest snapshot of your team workspace & active projects.</p>
         </div>
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 bg-slate-100 text-slate-700 px-3.5 py-2 rounded-xl text-xs font-semibold border border-slate-200/80 shadow-inner">
-            <Calendar className="w-4 h-4 text-emerald-600" />
+          <div className="flex items-center gap-2 bg-secondary dark:bg-slate-800 text-secondary-foreground dark:text-slate-300 px-3.5 py-2 rounded-xl text-xs font-semibold border border-border shadow-inner">
+            <Calendar className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
             <span>{new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
           </div>
           {user?.role === 'admin' && (
@@ -123,10 +123,10 @@ export default function Dashboard() {
         {statCards.map((stat, i) => {
           const IconComponent = stat.icon;
           return (
-            <Card key={i} className="group hover:border-emerald-500/50 hover:shadow-xl transition-all duration-300 rounded-2xl border-slate-200 bg-white overflow-hidden relative">
-              <div className="absolute top-0 left-0 w-1 h-full bg-slate-200 group-hover:bg-emerald-500 transition-colors duration-300" />
+            <Card key={i} className="group hover:border-emerald-500/50 dark:hover:border-emerald-500/50 hover:shadow-xl transition-all duration-300 rounded-2xl border-border bg-card dark:bg-slate-900/40 overflow-hidden relative">
+              <div className="absolute top-0 left-0 w-1 h-full bg-slate-200 dark:bg-slate-800 group-hover:bg-emerald-500 transition-colors duration-300" />
               <CardHeader className="flex flex-row items-center justify-between pb-2 pl-6">
-                <CardTitle className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                <CardTitle className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                   {stat.label}
                 </CardTitle>
                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center border shadow-xs transition-transform group-hover:scale-110 duration-300 ${stat.bg}`}>
@@ -134,8 +134,8 @@ export default function Dashboard() {
                 </div>
               </CardHeader>
               <CardContent className="pl-6 pb-5">
-                <div className="text-3xl font-extrabold text-slate-900 tracking-tight">{stat.value}</div>
-                <p className="text-[11px] text-slate-400 font-semibold mt-1 flex items-center gap-1">
+                <div className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">{stat.value}</div>
+                <p className="text-[11px] text-slate-400 dark:text-slate-500 font-semibold mt-1 flex items-center gap-1">
                   <span className="text-emerald-600 font-bold">●</span> {stat.trend}
                 </p>
               </CardContent>
@@ -147,51 +147,51 @@ export default function Dashboard() {
       {/* Main Grid: Projects Table & Donut Chart */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Recent Projects */}
-        <Card className="lg:col-span-2 rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col bg-white">
-          <CardHeader className="flex flex-row items-center justify-between pb-4 border-b border-slate-100 bg-slate-50/50 px-6 py-4">
+        <Card className="lg:col-span-2 rounded-2xl border border-border shadow-sm overflow-hidden flex flex-col bg-card dark:bg-slate-900/40">
+          <CardHeader className="flex flex-row items-center justify-between pb-4 border-b border-border bg-slate-50/50 dark:bg-slate-950/20 px-6 py-4">
             <div>
-              <CardTitle className="text-base sm:text-lg font-bold text-slate-900">Recent Projects</CardTitle>
-              <CardDescription className="text-xs text-slate-500">Active projects across your workspace</CardDescription>
+              <CardTitle className="text-base sm:text-lg font-bold text-slate-900 dark:text-slate-100">Recent Projects</CardTitle>
+              <CardDescription className="text-xs text-slate-500 dark:text-slate-400">Active projects across your workspace</CardDescription>
             </div>
-            <Button asChild variant="ghost" size="sm" className="text-xs text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 gap-1 rounded-lg">
+            <Button asChild variant="ghost" size="sm" className="text-xs text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 gap-1 rounded-lg">
               <Link to="/projects">View All <ArrowUpRight className="w-3.5 h-3.5" /></Link>
             </Button>
           </CardHeader>
           <CardContent className="p-0 overflow-x-auto flex-1">
             <Table>
               <TableHeader>
-                <TableRow className="bg-slate-50/80 border-b border-slate-100 text-slate-400 text-[11px] uppercase tracking-wider font-bold">
+                <TableRow className="bg-slate-50/80 dark:bg-slate-950/10 border-b border-border text-slate-400 dark:text-slate-500 text-[11px] uppercase tracking-wider font-bold">
                   <TableHead className="px-6 py-3.5">Project Name</TableHead>
                   <TableHead className="px-6 py-3.5">Lead</TableHead>
                   <TableHead className="px-6 py-3.5">Team</TableHead>
                   <TableHead className="px-6 py-3.5 text-right">Status</TableHead>
                 </TableRow>
               </TableHeader>
-              <TableBody className="divide-y divide-slate-100">
+              <TableBody className="divide-y divide-border">
                 {projects.length > 0 ? (
                   projects.map((proj) => (
-                    <TableRow key={proj._id} className="hover:bg-slate-50/70 transition-colors">
+                    <TableRow key={proj._id} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/20 transition-colors border-b border-border">
                       <TableCell className="px-6 py-4">
-                        <Link to={`/projects/${proj._id}`} className="font-bold text-slate-900 hover:text-emerald-600 text-sm block">
+                        <Link to={`/projects/${proj._id}`} className="font-bold text-slate-900 dark:text-slate-100 hover:text-emerald-600 dark:hover:text-emerald-400 text-sm block">
                           {proj.title}
                         </Link>
-                        <span className="text-xs text-slate-400 line-clamp-1">{proj.description || 'No description'}</span>
+                        <span className="text-xs text-slate-400 dark:text-slate-500 line-clamp-1">{proj.description || 'No description'}</span>
                       </TableCell>
                       <TableCell className="px-6 py-4">
-                        <span className="text-xs font-semibold text-slate-700 flex items-center gap-2">
-                          <span className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-[10px]">
+                        <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-2">
+                          <span className="w-6 h-6 rounded-full bg-emerald-100 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 flex items-center justify-center font-bold text-[10px]">
                             {proj.createdBy?.name?.charAt(0).toUpperCase() || 'U'}
                           </span>
                           {proj.createdBy?.name || 'Admin'}
                         </span>
                       </TableCell>
                       <TableCell className="px-6 py-4">
-                        <Badge variant="secondary" className="bg-slate-100 text-slate-600 font-bold text-xs py-0.5 px-2.5 rounded-full border border-slate-200">
+                        <Badge variant="secondary" className="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold text-xs py-0.5 px-2.5 rounded-full border border-slate-200 dark:border-slate-700">
                           {proj.members?.length || 1} {proj.members?.length === 1 ? 'member' : 'members'}
                         </Badge>
                       </TableCell>
                       <TableCell className="px-6 py-4 text-right">
-                        <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200 font-semibold text-xs px-2.5 py-0.5 rounded-full">
+                        <Badge variant="outline" className="bg-emerald-50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-900/30 font-semibold text-xs px-2.5 py-0.5 rounded-full">
                           Active
                         </Badge>
                       </TableCell>
@@ -210,10 +210,10 @@ export default function Dashboard() {
         </Card>
 
         {/* Task Donut Chart */}
-        <Card className="rounded-2xl border border-slate-200 shadow-sm flex flex-col bg-white">
-          <CardHeader className="pb-2 border-b border-slate-100 bg-slate-50/50 px-6 py-4">
-            <CardTitle className="text-base sm:text-lg font-bold text-slate-900">Task Overview</CardTitle>
-            <CardDescription className="text-xs text-slate-500">Distribution by workflow status</CardDescription>
+        <Card className="rounded-2xl border border-border shadow-sm flex flex-col bg-card dark:bg-slate-900/40">
+          <CardHeader className="pb-2 border-b border-border bg-slate-50/50 dark:bg-slate-950/20 px-6 py-4">
+            <CardTitle className="text-base sm:text-lg font-bold text-slate-900 dark:text-slate-100">Task Overview</CardTitle>
+            <CardDescription className="text-xs text-slate-500 dark:text-slate-400">Distribution by workflow status</CardDescription>
           </CardHeader>
           <CardContent className="pt-6 pb-6 flex-1 flex flex-col items-center justify-center">
             {chartData.length > 0 ? (
@@ -239,20 +239,20 @@ export default function Dashboard() {
                   </ResponsiveContainer>
                   {/* Center Label */}
                   <div className="absolute flex flex-col items-center justify-center text-center pointer-events-none">
-                    <span className="text-3xl font-extrabold text-slate-900 tracking-tight">{totalChartTasks}</span>
-                    <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400">Total Tasks</span>
+                    <span className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">{totalChartTasks}</span>
+                    <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 dark:text-slate-500">Total Tasks</span>
                   </div>
                 </div>
 
                 {/* Status Legend */}
-                <div className="grid grid-cols-3 gap-3 w-full mt-4 pt-4 border-t border-slate-100">
+                <div className="grid grid-cols-3 gap-3 w-full mt-4 pt-4 border-t border-border">
                   {chartData.map((item, idx) => (
-                    <div key={idx} className="bg-slate-50 p-2.5 rounded-xl border border-slate-100 text-center">
+                    <div key={idx} className="bg-slate-50 dark:bg-slate-950/10 p-2.5 rounded-xl border border-border text-center">
                       <div className="flex items-center justify-center gap-1.5 mb-1">
                         <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }} />
-                        <span className="text-xs text-slate-500 font-semibold">{item.name}</span>
+                        <span className="text-xs text-slate-500 dark:text-slate-400 font-semibold">{item.name}</span>
                       </div>
-                      <span className="text-base font-extrabold text-slate-900">{item.value}</span>
+                      <span className="text-base font-extrabold text-slate-900 dark:text-white">{item.value}</span>
                     </div>
                   ))}
                 </div>
@@ -268,48 +268,48 @@ export default function Dashboard() {
       </div>
 
       {/* Activity Timeline Section */}
-      <Card className="rounded-2xl border border-slate-200 shadow-sm overflow-hidden bg-white">
-        <CardHeader className="flex flex-row items-center justify-between pb-4 border-b border-slate-100 bg-slate-50/50 px-6 py-4">
+      <Card className="rounded-2xl border border-border shadow-sm overflow-hidden bg-card dark:bg-slate-900/40">
+        <CardHeader className="flex flex-row items-center justify-between pb-4 border-b border-border bg-slate-50/50 dark:bg-slate-950/20 px-6 py-4">
           <div>
-            <CardTitle className="text-base sm:text-lg font-bold text-slate-900">Activity Timeline</CardTitle>
-            <CardDescription className="text-xs text-slate-500">Real-time updates and task updates</CardDescription>
+            <CardTitle className="text-base sm:text-lg font-bold text-slate-900 dark:text-slate-100">Activity Timeline</CardTitle>
+            <CardDescription className="text-xs text-slate-500 dark:text-slate-400">Real-time updates and task updates</CardDescription>
           </div>
-          <div className="flex items-center gap-1 text-xs text-emerald-600 font-semibold bg-emerald-50 py-1 px-3 rounded-full border border-emerald-100">
+          <div className="flex items-center gap-1 text-xs text-emerald-600 font-semibold bg-emerald-50 dark:bg-emerald-950/20 py-1 px-3 rounded-full border border-emerald-100 dark:border-emerald-900/30">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" /> Live
           </div>
         </CardHeader>
         <CardContent className="p-6 sm:p-8">
           {recentTasks.length > 0 ? (
-            <div className="relative pl-6 space-y-8 before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[2px] before:bg-slate-200">
+            <div className="relative pl-6 space-y-8 before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[2px] before:bg-slate-200 dark:before:bg-slate-800">
               {recentTasks.map((task, idx) => {
                 const isCompleted = task.status === 'completed';
                 return (
                   <div key={task._id || idx} className="relative flex gap-5 items-start group">
                     {/* Timeline Node */}
-                    <div className={`absolute -left-[25px] top-1 w-6 h-6 rounded-full flex items-center justify-center ring-4 ring-white shadow-sm transition-transform group-hover:scale-125 duration-200 ${
+                    <div className={`absolute -left-[25px] top-1 w-6 h-6 rounded-full flex items-center justify-center ring-4 ring-white dark:ring-slate-900 shadow-sm transition-transform group-hover:scale-125 duration-200 ${
                       isCompleted ? 'bg-emerald-500 text-white' : 'bg-amber-500 text-white'
                     }`}>
                       {isCompleted ? <CheckCircle2 className="w-3.5 h-3.5" /> : <Clock className="w-3.5 h-3.5" />}
                     </div>
 
                     {/* Content Card */}
-                    <div className="flex-1 bg-slate-50/80 group-hover:bg-slate-50 p-4 rounded-xl border border-slate-200/80 group-hover:border-slate-300 transition-all duration-200 shadow-xs">
+                    <div className="flex-1 bg-slate-50/80 dark:bg-slate-950/10 group-hover:bg-slate-50 dark:group-hover:bg-slate-850/20 p-4 rounded-xl border border-border group-hover:border-slate-300 dark:group-hover:border-slate-700 transition-all duration-200 shadow-xs">
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-1">
-                        <Link to={`/projects/${task.projectId?._id}`} className="font-bold text-slate-900 hover:text-emerald-600 text-sm">
+                        <Link to={`/projects/${task.projectId?._id}`} className="font-bold text-slate-900 dark:text-slate-100 hover:text-emerald-600 dark:hover:text-emerald-400 text-sm">
                           {task.title}
                         </Link>
-                        <span className="text-xs text-slate-400 font-medium">
+                        <span className="text-xs text-slate-400 dark:text-slate-500 font-medium">
                           {task.createdAt ? `${formatDistanceToNow(new Date(task.createdAt))} ago` : 'Recently'}
                         </span>
                       </div>
-                      <p className="text-xs text-slate-500 line-clamp-2 mb-3">{task.description || 'No description provided for this task.'}</p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 mb-3">{task.description || 'No description provided for this task.'}</p>
                       <div className="flex items-center justify-between flex-wrap gap-2 text-xs">
-                        <span className="flex items-center gap-1.5 text-slate-600 font-semibold">
-                          <UserCheck className="w-3.5 h-3.5 text-emerald-600" /> 
-                          Assigned to <span className="text-slate-900 font-bold">{task.assignedTo?.name || 'Team Member'}</span>
+                        <span className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 font-semibold">
+                          <UserCheck className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" /> 
+                          Assigned to <span className="text-slate-900 dark:text-slate-200 font-bold">{task.assignedTo?.name || 'Team Member'}</span>
                         </span>
                         <Badge variant="outline" className={`text-[10px] uppercase font-bold tracking-wider py-0.5 px-2.5 rounded-full ${
-                          isCompleted ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200'
+                          isCompleted ? 'bg-emerald-50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-900/30' : 'bg-amber-50 dark:bg-amber-950/20 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-900/30'
                         }`}>
                           {task.status}
                         </Badge>

@@ -40,44 +40,56 @@ export default function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse
       {/* Overlay for mobile */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/60 backdrop-blur-xs z-40 lg:hidden transition-opacity animate-fade-in"
+          className="fixed inset-0 bg-black/60 backdrop-blur-xs z-30 lg:hidden transition-opacity animate-fade-in"
           onClick={onClose}
         />
       )}
 
       {/* Sidebar Container */}
       <aside
-        className={`fixed top-0 left-0 z-50 h-full bg-gradient-to-b from-[#022c22] via-[#043e31] to-[#022c22] text-slate-100 border-r border-[#065f46] transform transition-all duration-300 ease-in-out flex flex-col shadow-2xl ${
+        className={`fixed inset-y-0 left-0 z-40 bg-gradient-to-b from-[#022c22] via-[#043e31] to-[#022c22] text-slate-100 border-r border-[#065f46] transform transition-[width,transform] duration-300 ease-in-out flex flex-col shadow-2xl ${
           isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
-        } ${isCollapsed ? 'w-20' : 'w-72'}`}
+        }`}
+        style={{ width: 'var(--sidebar-width)' }}
       >
         {/* Branding & Collapse Toggle Section */}
-        <div className="flex items-center justify-between px-5 h-16 border-b border-[#065f46]/70 bg-black/15 shrink-0">
-          <div className="flex items-center gap-3 min-w-0">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-400 to-teal-600 flex items-center justify-center shadow-lg shadow-emerald-500/20 shrink-0">
-              <Layers className="w-5 h-5 text-[#022c22] stroke-[2.5]" />
-            </div>
-            {!isCollapsed && (
-              <div className="min-w-0 animate-fade-in transition-opacity duration-200">
-                <h1 className="text-xl font-black bg-gradient-to-r from-white via-slate-100 to-emerald-300 bg-clip-text text-transparent tracking-tight truncate">
-                  TaskFlow<span className="text-emerald-400">.</span>
-                </h1>
-                <span className="text-[10px] uppercase font-extrabold text-emerald-400/80 tracking-widest block -mt-1 truncate">
-                  SaaS Workspace
-                </span>
+        <div className={`flex items-center border-b border-[#065f46]/70 bg-black/15 shrink-0 ${isCollapsed ? 'justify-center px-0 h-16' : 'justify-between px-5 h-16'}`}>
+          {isCollapsed ? (
+            <button
+              type="button"
+              onClick={onToggleCollapse}
+              className="flex items-center justify-center w-10 h-10 rounded-xl text-slate-300 hover:text-white hover:bg-[#065f46]/60 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              title="Expand Sidebar"
+            >
+              <PanelLeft className="w-5.5 h-5.5 text-emerald-400 animate-pulse" />
+            </button>
+          ) : (
+            <>
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-400 to-teal-600 flex items-center justify-center shadow-lg shadow-emerald-500/20 shrink-0">
+                  <Layers className="w-5 h-5 text-[#022c22] stroke-[2.5]" />
+                </div>
+                <div className="min-w-0 animate-fade-in transition-opacity duration-200">
+                  <h1 className="text-xl font-black bg-gradient-to-r from-white via-slate-100 to-emerald-300 bg-clip-text text-transparent tracking-tight truncate">
+                    TaskFlow<span className="text-emerald-400">.</span>
+                  </h1>
+                  <span className="text-[10px] uppercase font-extrabold text-emerald-400/80 tracking-widest block -mt-1 truncate">
+                    SaaS Workspace
+                  </span>
+                </div>
               </div>
-            )}
-          </div>
 
-          {/* Desktop Expand/Collapse Button */}
-          <button
-            type="button"
-            onClick={onToggleCollapse}
-            className="hidden lg:flex items-center justify-center w-8 h-8 rounded-lg text-slate-400 hover:text-white hover:bg-[#065f46]/60 transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-500 shrink-0 ml-1"
-            title={isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
-          >
-            {isCollapsed ? <PanelLeft className="w-5 h-5" /> : <PanelLeftClose className="w-5 h-5" />}
-          </button>
+              {/* Desktop Expand/Collapse Button */}
+              <button
+                type="button"
+                onClick={onToggleCollapse}
+                className="hidden lg:flex items-center justify-center w-8 h-8 rounded-lg text-slate-400 hover:text-white hover:bg-[#065f46]/60 transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-500 shrink-0 ml-1"
+                title="Collapse Sidebar"
+              >
+                <PanelLeftClose className="w-5 h-5" />
+              </button>
+            </>
+          )}
         </div>
 
         {/* Navigation Section */}
