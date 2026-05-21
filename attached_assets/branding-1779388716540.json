@@ -1,0 +1,115 @@
+{
+  "colorScheme": "light",
+  "fonts": [
+    {
+      "family": "Inter",
+      "role": "body"
+    }
+  ],
+  "colors": {
+    "primary": "#05091C",
+    "secondary": "#90A1B9",
+    "accent": "#0F172B",
+    "background": "#f8fafc",
+    "textPrimary": "#0F172B",
+    "link": "#0F172B"
+  },
+  "typography": {
+    "fontFamilies": {
+      "primary": "Inter",
+      "heading": "Inter"
+    },
+    "fontStacks": {
+      "heading": [
+        "Inter",
+        "sans-serif"
+      ],
+      "body": [
+        "Inter",
+        "sans-serif"
+      ],
+      "paragraph": [
+        "Inter",
+        "sans-serif"
+      ]
+    },
+    "fontSizes": {
+      "h1": "48px",
+      "h2": "30px",
+      "body": "14px"
+    }
+  },
+  "spacing": {
+    "baseUnit": 8,
+    "borderRadius": "2px"
+  },
+  "components": {
+    "input": {
+      "background": "#05091C",
+      "textColor": "#FFFFFF",
+      "borderColor": "#1D293D",
+      "borderRadius": "16.8px",
+      "borderRadiusCorners": {
+        "topLeft": "16.8px",
+        "topRight": "16.8px",
+        "bottomRight": "16.8px",
+        "bottomLeft": "16.8px"
+      },
+      "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 2px 4px 0px inset"
+    },
+    "buttonPrimary": {
+      "background": "#0F172B",
+      "textColor": "#FFFFFF",
+      "borderRadius": "16.8px",
+      "borderRadiusCorners": {
+        "topLeft": "16.8px",
+        "topRight": "16.8px",
+        "bottomRight": "16.8px",
+        "bottomLeft": "16.8px"
+      },
+      "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, oklab(0.696 -0.162114 0.0511766 / 0.2) 0px 20px 25px -5px, oklab(0.696 -0.162114 0.0511766 / 0.2) 0px 8px 10px -6px"
+    }
+  },
+  "images": {
+    "logo": null,
+    "ogImage": null
+  },
+  "__llm_button_reasoning": {
+    "primary": {
+      "index": 0,
+      "text": "Sign In to Workspace",
+      "reasoning": "The button 'Sign In to Workspace' is the only button present and uses a dark background color (#0F172B) which is distinct and stands out against the page's lighter background. It is action-oriented, indicating a primary call-to-action."
+    },
+    "secondary": {
+      "index": -1,
+      "text": "N/A",
+      "reasoning": "There is only one button available, so no secondary button can be selected."
+    },
+    "confidence": 0.9
+  },
+  "personality": {
+    "tone": "professional",
+    "energy": "medium",
+    "targetAudience": "business professionals and teams"
+  },
+  "designSystem": {
+    "framework": "tailwind",
+    "componentLibrary": ""
+  },
+  "confidence": {
+    "buttons": 0.9,
+    "colors": 0.9,
+    "overall": 0.9
+  },
+  "__llm_metadata": {
+    "logoSelection": {
+      "llmCalled": false,
+      "llmSucceeded": false,
+      "finalSource": "none"
+    },
+    "buttonClassification": {
+      "llmCalled": true,
+      "llmSucceeded": true
+    }
+  }
+}
