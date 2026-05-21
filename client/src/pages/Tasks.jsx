@@ -168,7 +168,7 @@ export default function Tasks() {
                 {filteredTasks.map((task) => (
                   <TableRow key={task._id} className="hover:bg-slate-50/70 transition-colors group">
                     <TableCell className="px-6 py-4 max-w-sm">
-                      <p className="font-extrabold text-slate-900 text-sm group-hover:text-emerald-600 transition-colors">{task.title}</p>
+                      <Link to={`/tasks/${task._id}`} className="font-extrabold text-slate-900 text-sm group-hover:text-emerald-600 transition-colors hover:underline underline-offset-2">{task.title}</Link>
                       <p className="text-xs text-slate-400 mt-0.5 line-clamp-1">{task.description || 'No additional details.'}</p>
                     </TableCell>
                     <TableCell className="px-6 py-4">
@@ -238,7 +238,7 @@ export default function Tasks() {
                     {task.projectId?.title || 'Project'} <ArrowUpRight className="w-3 h-3" />
                   </Link>
                   <CardTitle className="text-base font-extrabold text-slate-900 group-hover:text-emerald-600 transition-colors line-clamp-1">
-                    {task.title}
+                    <Link to={`/tasks/${task._id}`} className="hover:underline underline-offset-2">{task.title}</Link>
                   </CardTitle>
                 </div>
                 <Badge variant={task.priority === 'high' ? 'destructive' : 'secondary'} className={`text-[10px] font-extrabold uppercase tracking-wider py-0.5 px-2.5 rounded-md ${
