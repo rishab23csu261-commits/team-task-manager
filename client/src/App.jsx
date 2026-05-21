@@ -13,6 +13,7 @@ import Projects       from './pages/Projects';
 import ProjectDetail  from './pages/ProjectDetail';
 import Tasks          from './pages/Tasks';
 import TaskDetail     from './pages/TaskDetail';
+import Profile        from './pages/Profile';
 
 function App() {
   return (
@@ -43,6 +44,7 @@ function App() {
         <Route path="projects/:id" element={<ProjectDetail />} />
         <Route path="tasks" element={<Tasks />} />
         <Route path="tasks/:id" element={<TaskDetail />} />
+        <Route path="profile" element={<Profile />} />
       </Route>
 
       {/* Catch all */}

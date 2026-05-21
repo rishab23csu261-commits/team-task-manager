@@ -1,4 +1,4 @@
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/useAuth';
 import { LayoutDashboard, FolderKanban, CheckSquare, Layers, LogOut, ChevronRight, PanelLeftClose, PanelLeft, Shield, UserCircle } from 'lucide-react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
@@ -188,6 +188,16 @@ export default function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse
                 <Badge variant="outline" className="border-emerald-500 bg-emerald-500/10 text-emerald-400 text-[10px] uppercase font-black px-2.5 py-0.5 rounded-full tracking-wider">
                   {user?.role || 'Member'}
                 </Badge>
+              </div>
+              <div className="border-t border-[#065f46] mt-1 pt-1">
+                <Link
+                  to="/profile"
+                  onClick={() => { if (isOpen) onClose(); }}
+                  className="flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-xs text-slate-300 hover:text-white hover:bg-[#065f46]/60 transition-colors font-bold"
+                >
+                  <UserCircle className="w-3.5 h-3.5 text-emerald-400" />
+                  Profile Settings
+                </Link>
               </div>
             </DropdownMenuContent>
           </DropdownMenu>

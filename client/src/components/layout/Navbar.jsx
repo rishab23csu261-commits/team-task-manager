@@ -1,6 +1,6 @@
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../../context/useAuth';
-import { Menu, LogOut, Bell, Search, Sun, Moon } from 'lucide-react';
+import { Menu, LogOut, Bell, Search, Sun, Moon, UserCog } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
@@ -92,6 +92,14 @@ export default function Navbar({ onMenuToggle, theme, onThemeToggle }) {
                   <p className="text-xs leading-none text-slate-500 dark:text-slate-400">{user?.email || ''}</p>
                 </div>
               </DropdownMenuLabel>
+              <DropdownMenuSeparator className="bg-slate-100 dark:bg-slate-800" />
+              <Link
+                to="/profile"
+                className="w-full flex items-center gap-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white cursor-pointer font-medium rounded-lg px-2.5 py-2 my-0.5 transition-colors text-sm"
+              >
+                <UserCog className="h-4 w-4 text-emerald-500" />
+                <span>Profile Settings</span>
+              </Link>
               <DropdownMenuSeparator className="bg-slate-100 dark:bg-slate-800" />
               {/* Logout as a standalone plain button — avoids Base-UI DropdownMenuItem portal crash */}
               <button

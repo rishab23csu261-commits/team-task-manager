@@ -125,9 +125,18 @@ export function AuthProvider({ children }) {
 
   const clearError = useCallback(() => setError(null), []);
 
+  // Allow pages (e.g. Profile) to push updated user data into context + localStorage
+  const updateUser = useCallback((updates) => {
+    setUser((prev) => {
+      const next = { ...prev, ...updates };
+      localStorage.setItem('user', JSON.stringify(next));
+      return next;
+    });
+  }, []);
+
   return (
     <AuthContext.Provider
-      value={{ user, token, loading, error, login, signup, logout, clearError }}
+      value={{ user, token, loading, error, login, signup, logout, clearError, updateUser }}
     >
       {children}
     </AuthContext.Provider>
