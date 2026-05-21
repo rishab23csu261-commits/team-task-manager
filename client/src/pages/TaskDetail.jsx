@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import API from '../api/axios';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/useAuth';
 import {
   ArrowLeft, CheckCircle2, Clock, Circle, AlertCircle, Calendar,
   FolderKanban, UserCheck, Tag, Edit3, Save, X, Trash2,

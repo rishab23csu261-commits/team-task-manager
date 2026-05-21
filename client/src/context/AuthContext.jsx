@@ -1,23 +1,18 @@
-import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { createContext, useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import API from '../api/axios';
 
-const AuthContext = createContext(null);
+export const AuthContext = createContext(null);
 
-// Purge every possible auth storage key
 const clearAllAuthStorage = () => {
-  const keys = [
-    'token', 'user', 'authToken', 'accessToken',
-    'currentUser', 'taskflow-user', 'taskflow-token', 'auth-storage',
-  ];
-  keys.forEach((k) => {
+  ['token', 'user', 'authToken', 'accessToken', 'currentUser',
+   'taskflow-user', 'taskflow-token', 'auth-storage'].forEach((k) => {
     try { localStorage.removeItem(k); } catch (_) {}
     try { sessionStorage.removeItem(k); } catch (_) {}
   });
   try { sessionStorage.clear(); } catch (_) {}
 };
 
-// Safely read stored token and user, discard if malformed
 const readStorage = () => {
   try {
     const token = localStorage.getItem('token');
@@ -43,7 +38,6 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [error,   setError]   = useState(null);
 
-  // On mount, verify token with backend
   useEffect(() => {
     const verifyToken = async () => {
       const storedToken = localStorage.getItem('token');
@@ -58,21 +52,23 @@ export function AuthProvider({ children }) {
 
       try {
         const { data } = await API.get('/auth/me');
-        if (!data || !data._id) throw new Error('Bad user object');
+        if (!data?._id) throw new Error('Bad user object');
         localStorage.setItem('user', JSON.stringify(data));
         setUser(data);
         setToken(storedToken);
-      } catch {
-        clearAllAuthStorage();
-        setUser(null);
-        setToken(null);
-        // Redirect only if not already on a public page
-        if (
-          window.location.pathname !== '/login' &&
-          window.location.pathname !== '/signup'
-        ) {
-          navigate('/login', { replace: true });
+      } catch (err) {
+        // Only clear session on explicit 401/403 — not on network timeouts
+        const status = err?.response?.status;
+        if (status === 401 || status === 403) {
+          clearAllAuthStorage();
+          setUser(null);
+          setToken(null);
+          const isPublic =
+            window.location.pathname === '/login' ||
+            window.location.pathname === '/signup';
+          if (!isPublic) navigate('/login', { replace: true });
         }
+        // Network error: keep token — user stays logged in
       } finally {
         setLoading(false);
       }
@@ -82,9 +78,8 @@ export function AuthProvider({ children }) {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const login = useCallback(async (formData) => {
+    setError(null);
     try {
-      setLoading(true);
-      setError(null);
       const { data } = await API.post('/auth/login', formData);
       const { token: newToken, ...userData } = data;
       clearAllAuthStorage();
@@ -94,18 +89,16 @@ export function AuthProvider({ children }) {
       setUser(userData);
       return { success: true };
     } catch (err) {
-      const message = err.response?.data?.message || 'Login failed. Please try again.';
+      const message =
+        err.response?.data?.message || 'Login failed. Please check your details.';
       setError(message);
       return { success: false, message };
-    } finally {
-      setLoading(false);
     }
   }, []);
 
   const signup = useCallback(async (formData) => {
+    setError(null);
     try {
-      setLoading(true);
-      setError(null);
       const { data } = await API.post('/auth/signup', formData);
       const { token: newToken, ...userData } = data;
       clearAllAuthStorage();
@@ -115,30 +108,19 @@ export function AuthProvider({ children }) {
       setUser(userData);
       return { success: true };
     } catch (err) {
-      const message = err.response?.data?.message || 'Signup failed. Please try again.';
+      const message =
+        err.response?.data?.message || 'Signup failed. Please try again.';
       setError(message);
       return { success: false, message };
-    } finally {
-      setLoading(false);
     }
   }, []);
 
-  // -----------------------------------------------------------------------
-  // LOGOUT — the key fix:
-  // 1. Wipe storage FIRST so PrivateRoute immediately sees no token.
-  // 2. Reset state synchronously so React re-renders PrivateRoute → /login.
-  // 3. Defer navigate() one tick so any open dropdown portals can unmount
-  //    cleanly before we swap the route tree.
-  // -----------------------------------------------------------------------
   const logout = useCallback(() => {
     clearAllAuthStorage();
     setToken(null);
     setUser(null);
     setError(null);
-    // Tiny timeout lets the dropdown portal close gracefully before navigation
-    setTimeout(() => {
-      navigate('/login', { replace: true });
-    }, 0);
+    setTimeout(() => navigate('/login', { replace: true }), 0);
   }, [navigate]);
 
   const clearError = useCallback(() => setError(null), []);
@@ -151,9 +133,3 @@ export function AuthProvider({ children }) {
     </AuthContext.Provider>
   );
 }
-
-export const useAuth = () => {
-  const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error('useAuth must be used within an AuthProvider');
-  return ctx;
-};
