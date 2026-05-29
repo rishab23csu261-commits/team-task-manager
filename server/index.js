@@ -17,6 +17,7 @@ const app = express();
 // ── CORS ────────────────────────────────────────────────────────────────────
 // Allow any Vercel preview/production URL, localhost, and Railway origins.
 const ALLOWED_ORIGINS = [
+  "https://team-task-manager-three-eta.vercel.app", // Explicit live frontend URL
   /^https:\/\/.*\.vercel\.app$/,          // any Vercel deployment
   /^https:\/\/.*\.up\.railway\.app$/,     // Railway preview URLs
   /^http:\/\/localhost(:\d+)?$/,          // local dev
@@ -35,8 +36,12 @@ app.use(cors({
     const allowed = ALLOWED_ORIGINS.some((rule) =>
       typeof rule === 'string' ? rule === origin : rule.test(origin)
     );
-    if (allowed) return callback(null, true);
-    return callback(new Error(`CORS: origin ${origin} not allowed`));
+    if (allowed) {
+      return callback(null, true);
+    } else {
+      // Return clean false to let cors package handle rejection gracefully without 500 Internal Server Error
+      return callback(null, false);
+    }
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
