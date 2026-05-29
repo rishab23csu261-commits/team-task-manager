@@ -13,7 +13,7 @@ import {
   FolderKanban, CheckCircle2, Clock, AlertCircle,
   ArrowUpRight, Activity, Calendar, UserCheck, Plus,
   TrendingUp, Target, Zap, ArrowRight, Kanban, ListTodo,
-  TrendingDown, Sparkles, Send, Sparkle, Flame, Info, Check, UserPlus
+  TrendingDown, Sparkles, Send, Sparkle, Flame, Info, Check, UserPlus, Users
 } from 'lucide-react';
 import {
   AreaChart, Area, XAxis, YAxis, Tooltip as RechartsTooltip,
