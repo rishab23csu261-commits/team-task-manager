@@ -15,38 +15,28 @@ const userRoutes          = require('./routes/users');
 const app = express();
 
 // ── CORS ────────────────────────────────────────────────────────────────────
-// Allow any Vercel preview/production URL, localhost, and Railway origins.
-const ALLOWED_ORIGINS = [
-  "https://team-task-manager-three-eta.vercel.app", // Explicit live frontend URL
-  /^https:\/\/.*\.vercel\.app$/,          // any Vercel deployment
-  /^https:\/\/.*\.up\.railway\.app$/,     // Railway preview URLs
-  /^http:\/\/localhost(:\d+)?$/,          // local dev
-  /^http:\/\/127\.0\.0\.1(:\d+)?$/,
+const allowedOrigins = [
+  "https://team-task-manager-three-eta.vercel.app",
+  "http://localhost:5173",
+  "http://localhost:3000",
+  "http://localhost:5000",
+  "http://127.0.0.1:5173"
 ];
 
-// Also allow an explicit origin set via env (e.g. your custom domain)
-if (process.env.ALLOWED_ORIGIN) {
-  ALLOWED_ORIGINS.push(process.env.ALLOWED_ORIGIN);
-}
-
 app.use(cors({
-  origin: (origin, callback) => {
-    // Allow requests with no origin (mobile apps, curl, server-to-server)
-    if (!origin) return callback(null, true);
-    const allowed = ALLOWED_ORIGINS.some((rule) =>
-      typeof rule === 'string' ? rule === origin : rule.test(origin)
-    );
-    if (allowed) {
-      return callback(null, true);
+  origin: function(origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
     } else {
-      // Return clean false to let cors package handle rejection gracefully without 500 Internal Server Error
-      return callback(null, false);
+      callback(new Error("Not allowed by CORS"));
     }
   },
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
 }));
+
+app.options("*", cors());
 
 app.use(express.json());
 
