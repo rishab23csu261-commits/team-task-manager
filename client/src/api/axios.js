@@ -3,17 +3,33 @@ import axios from "axios";
 // Always use relative /api in dev (Vite proxies to localhost:3001).
 // In production (Vercel), use VITE_API_URL env var if set, otherwise fall back
 // to the Railway URL. Set VITE_API_URL in your Vercel project settings.
-const BASE_URL = import.meta.env.VITE_API_URL
-  || (import.meta.env.PROD
+let BASE_URL = import.meta.env.VITE_API_URL || "";
+
+if (BASE_URL) {
+  // Normalize protocols
+  if (!BASE_URL.startsWith("http://") && !BASE_URL.startsWith("https://")) {
+    BASE_URL = "https://" + BASE_URL;
+  }
+  // Remove trailing slash
+  if (BASE_URL.endsWith("/")) {
+    BASE_URL = BASE_URL.slice(0, -1);
+  }
+  // Ensure it has the /api suffix
+  if (!BASE_URL.endsWith("/api")) {
+    BASE_URL += "/api";
+  }
+} else {
+  BASE_URL = import.meta.env.PROD
     ? "https://team-task-manager-production-01a2.up.railway.app/api"
-    : "/api");
+    : "/api";
+}
 
 const API = axios.create({
   baseURL: BASE_URL,
   headers: {
     "Content-Type": "application/json",
   },
-  withCredentials: false,
+  withCredentials: true,
 });
 
 // Attach JWT on every request
