@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Perfect Guess – Ultimate Number Guessing Game</title>
+  <meta name="description" content="Test your intuition! Play The Perfect Guess — guess the secret number, beat the clock, and climb the global leaderboard. Free to play." />
+  <meta name="keywords"    content="number guessing game, puzzle game, leaderboard, brain game" />
+  <meta property="og:title"       content="The Perfect Guess" />
+  <meta property="og:description" content="Can you guess the perfect number? Play free now!" />
+  <meta property="og:type"        content="website" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════
+     NAVIGATION
+═══════════════════════════════════════════════════════════ -->
+<nav id="navbar" role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a class="nav-logo" href="#" onclick="app.navigate('home');return false;" aria-label="The Perfect Guess – Home">
+      🎯 <span>The Perfect Guess</span>
+    </a>
+
+    <div class="nav-links" role="menubar">
+      <a href="#" data-sec="home"        onclick="app.navigate('home');return false;"        role="menuitem">Home</a>
+      <a href="#" data-sec="play"        onclick="app.navigate('play');return false;"        role="menuitem">Play</a>
+      <a href="#" data-sec="leaderboard" onclick="app.navigate('leaderboard');return false;" role="menuitem">Leaderboard</a>
+      <a href="#" data-sec="premium"     onclick="app.navigate('premium');return false;"     role="menuitem">Premium</a>
+    </div>
+
+    <button class="btn btn-primary btn-sm nav-cta-btn" onclick="app.navigate('play')" aria-label="Play the game free">
+      🚀 Play Free
+    </button>
+    <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false">☰</button>
+  </div>
+</nav>
+
+<!-- Mobile nav -->
+<nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation">
+  <a href="#" data-sec="home"        onclick="app.navigate('home');        closeMobileNav();return false;">Home</a>
+  <a href="#" data-sec="play"        onclick="app.navigate('play');        closeMobileNav();return false;">Play</a>
+  <a href="#" data-sec="leaderboard" onclick="app.navigate('leaderboard'); closeMobileNav();return false;">Leaderboard</a>
+  <a href="#" data-sec="premium"     onclick="app.navigate('premium');     closeMobileNav();return false;">Premium</a>
+</nav>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     SECTION: HOME
+═══════════════════════════════════════════════════════════ -->
+<section id="sec-home" class="section" aria-label="Home">
+
+  <!-- Hero -->
+  <div class="hero">
+    <canvas id="heroCanvas" aria-hidden="true"></canvas>
+    <div class="hero-content">
+      <div class="hero-badge">🏆 #1 Number Guessing Game</div>
+
+      <h1 class="hero-title">
+        Can You Guess the<br>
+        <span class="gradient-text">Perfect Number?</span>
+      </h1>
+
+      <p class="hero-subtitle">
+        Challenge your intuition, beat the clock, and climb the global leaderboard.
+        Three difficulty levels. One ultimate goal.
+      </p>
+
+      <div class="hero-actions">
+        <button class="btn btn-primary btn-lg" id="hero-play-btn" onclick="app.navigate('play')">
+          🎮 Play Now – It's Free
+        </button>
+        <button class="btn btn-outline btn-lg" onclick="app.navigate('leaderboard')">
+          🏆 View Leaderboard
+        </button>
+      </div>
+
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <span class="h-stat-num" data-count="18432">0</span>
+          <span class="h-stat-lbl">Games Played</span>
+        </div>
+        <div class="hero-stat">
+          <span class="h-stat-num" data-count="5217">0</span>
+          <span class="h-stat-lbl">Players</span>
+        </div>
+        <div class="hero-stat">
+          <span class="h-stat-num" data-count="498">0</span>
+          <span class="h-stat-lbl">Best Score</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Features -->
+  <div class="features-section">
+    <div class="container">
+      <div class="sec-head">
+        <h2>Why Players Love <span class="gradient-text">The Perfect Guess</span></h2>
+        <p>More than just a number game — it's a test of strategy and intuition</p>
+      </div>
+      <div class="features-grid">
+        <div class="feat-card">
+          <div class="feat-icon">⚡</div>
+          <h3>Lightning Fast</h3>
+          <p>Instant feedback after every guess. No waiting — pure gameplay flow.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">🎯</div>
+          <h3>3 Difficulty Modes</h3>
+          <p>Easy (1–50), Medium (1–100), Hard (1–500) — for every skill level.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">🏆</div>
+          <h3>Live Leaderboard</h3>
+          <p>Compete with others and climb the all-time ranking for each difficulty.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">📊</div>
+          <h3>Detailed Stats</h3>
+          <p>Track every game: attempts, win rate, score trend, and personal best.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">⏱️</div>
+          <h3>Speed Challenges</h3>
+          <p>Race against the clock — fewer guesses and less time means a better score.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">🎵</div>
+          <h3>Immersive Sound</h3>
+          <p>Synthesised audio feedback — rising arpeggios for wins, deep beeps for misses.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- How To Play -->
+  <div class="howto-section">
+    <div class="container">
+      <div class="sec-head">
+        <h2>How To Play</h2>
+        <p>Three simple steps to guessing perfection</p>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <h3>Choose Difficulty</h3>
+          <p>Pick Easy (1–50), Medium (1–100), or Hard (1–500)</p>
+        </div>
+        <div class="step-arrow" aria-hidden="true">→</div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <h3>Make Your Guess</h3>
+          <p>Type any number in the range and hit Submit or press Enter</p>
+        </div>
+        <div class="step-arrow" aria-hidden="true">→</div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <h3>Follow the Hints</h3>
+          <p>Use Higher / Lower clues to zero in on the secret number</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA Banner -->
+  <div class="cta-section">
+    <div class="container">
+      <h2>Ready to Test Your Intuition?</h2>
+      <p>Join thousands of players already competing on the leaderboard</p>
+      <button class="btn btn-primary btn-lg" onclick="app.navigate('play')">
+        🎮 Start Playing Now
+      </button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-logo">🎯 The Perfect Guess</div>
+          <p class="footer-brand" style="color:var(--text-muted);font-size:.875rem;line-height:1.65;max-width:250px;">
+            The ultimate number guessing game. Test your intuition and beat the leaderboard.
+          </p>
+        </div>
+        <div class="footer-col">
+          <h4>Game</h4>
+          <a href="#" onclick="app.navigate('play');return false;">Play Now</a>
+          <a href="#" onclick="app.navigate('leaderboard');return false;">Leaderboard</a>
+          <a href="#" onclick="app.navigate('premium');return false;">Premium</a>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <a href="#">About</a>
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+          <a href="#">Contact</a>
+        </div>
+        <div class="footer-col">
+          <h4>Community</h4>
+          <a href="#">Twitter / X</a>
+          <a href="#">Discord</a>
+          <a href="#">Instagram</a>
+          <a href="#">GitHub</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2025 The Perfect Guess. All rights reserved.</p>
+        <p>Made with ❤️ for number lovers</p>
+      </div>
+    </div>
+  </footer>
+
+</section><!-- /home -->
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     SECTION: PLAY
+═══════════════════════════════════════════════════════════ -->
+<section id="sec-play" class="section" aria-label="Play the game">
+  <div class="game-layout">
+
+    <!-- ── Sidebar ── -->
+    <aside class="game-sidebar" aria-label="Game statistics">
+
+      <!-- Game Stats -->
+      <div class="s-card">
+        <div class="s-card-title">📊 Game Stats</div>
+        <div class="s-row"><span>Attempts</span>  <span class="s-val" id="stat-attempts">0</span></div>
+        <div class="s-row"><span>Score</span>     <span class="s-val" id="stat-score">—</span></div>
+        <div class="s-row"><span>Best Score</span><span class="s-val gold" id="stat-best">0</span></div>
+        <div class="s-row"><span>Timer</span>     <span class="s-val cyan" id="stat-timer">00:00</span></div>
+      </div>
+
+      <!-- Session Stats -->
+      <div class="s-card">
+        <div class="s-card-title">📈 Session</div>
+        <div class="s-row"><span>Played</span>  <span class="s-val" id="stat-played">0</span></div>
+        <div class="s-row"><span>Won</span>     <span class="s-val success" id="stat-won">0</span></div>
+        <div class="s-row"><span>Win Rate</span><span class="s-val" id="stat-winrate">0%</span></div>
+      </div>
+
+      <!-- Guess History -->
+      <div class="s-card" style="flex:1">
+        <div class="s-card-title">📝 Guess History</div>
+        <div class="g-history" id="g-history" aria-live="polite">
+          <p class="g-empty">No guesses yet</p>
+        </div>
+      </div>
+
+      <!-- Upgrade card -->
+      <div class="upgrade-card">
+        <small>Advertisement</small>
+        <strong>🌟 Upgrade to Pro</strong>
+        <p>Remove ads + unlock Extreme mode (1–1000)</p>
+        <button class="btn btn-primary btn-sm btn-block" onclick="app.navigate('premium')">
+          Upgrade Now →
+        </button>
+      </div>
+
+    </aside>
+
+    <!-- ── Main game card ── -->
+    <main>
+      <div class="g-card">
+
+        <!-- Header -->
+        <div class="g-header">
+          <div class="g-title">
+            <h1>🎯 The Perfect Guess</h1>
+            <p id="g-subtitle">Select a difficulty and start guessing!</p>
+          </div>
+          <div class="g-diff-badge" id="diff-badge">Medium</div>
+        </div>
+
+        <!-- Difficulty Selector -->
+        <div class="diff-row" role="group" aria-label="Select difficulty">
+          <button class="diff-btn" data-diff="easy"
+            onclick="app.selectDiff('easy')" aria-label="Easy mode: 1 to 50">
+            <span class="d-emoji">🟢</span>
+            <div>
+              <strong class="d-label">Easy</strong>
+              <span class="d-range">1 – 50</span>
+            </div>
+          </button>
+          <button class="diff-btn active" data-diff="medium"
+            onclick="app.selectDiff('medium')" aria-label="Medium mode: 1 to 100">
+            <span class="d-emoji">🔵</span>
+            <div>
+              <strong class="d-label">Medium</strong>
+              <span class="d-range">1 – 100</span>
+            </div>
+          </button>
+          <button class="diff-btn" data-diff="hard"
+            onclick="app.selectDiff('hard')" aria-label="Hard mode: 1 to 500">
+            <span class="d-emoji">🟠</span>
+            <div>
+              <strong class="d-label">Hard</strong>
+              <span class="d-range">1 – 500</span>
+            </div>
+          </button>
+          <button class="diff-btn locked" data-diff="extreme"
+            onclick="app.navigate('premium')" aria-label="Extreme mode: Pro only">
+            <span class="d-emoji">🔴</span>
+            <div>
+              <strong class="d-label">Extreme</strong>
+              <span class="d-range">🔒 Pro Only</span>
+            </div>
+          </button>
+        </div>
+
+        <!-- Closeness Progress -->
+        <div>
+          <div class="progress-head">
+            <span>Closeness to Target</span>
+            <span id="prog-pct">0%</span>
+          </div>
+          <div class="prog-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Closeness to target">
+            <div class="prog-fill" id="prog-fill"></div>
+          </div>
+        </div>
+
+        <!-- Feedback -->
+        <div class="feedback-box" id="feedback-box" role="status" aria-live="polite">
+          <span id="feedback-text">🎲 Press "New Game" to start playing!</span>
+        </div>
+
+        <!-- Input Area -->
+        <div class="input-area">
+          <div class="input-wrap">
+            <input
+              type="number"
+              id="guess-input"
+              class="guess-input"
+              placeholder="Enter your guess…"
+              min="1" max="1000"
+              autocomplete="off"
+              aria-label="Enter your guess"
+            />
+            <span class="range-hint" id="input-range">Range: 1 – 100</span>
+          </div>
+          <button class="btn-submit" id="btn-submit" onclick="app.submitGuess()" aria-label="Submit guess">
+            🚀 Submit
+          </button>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-row" style="margin-top:.25rem">
+          <button class="btn btn-accent"  onclick="app.newGame()">🎲 New Game</button>
+          <button class="btn btn-ghost"   onclick="app.resetScore()">🔄 Reset Score</button>
+          <button class="btn btn-ghost"   data-action="sound" onclick="app.toggleSound()">🔊 Sound</button>
+          <button class="btn btn-danger"  onclick="app.navigate('home')">🏠 Home</button>
+        </div>
+
+      </div>
+    </main>
+
+  </div>
+</section><!-- /play -->
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     SECTION: LEADERBOARD
+═══════════════════════════════════════════════════════════ -->
+<section id="sec-leaderboard" class="section lb-section" aria-label="Leaderboard">
+  <div class="container">
+    <div class="sec-head">
+      <h1>🏆 Leaderboard</h1>
+      <p>Top players ranked by highest score</p>
+    </div>
+
+    <div class="lb-layout">
+
+      <!-- Table card -->
+      <div class="lb-card">
+        <div class="lb-filters" role="group" aria-label="Filter leaderboard">
+          <button class="lb-filter active" data-diff="all"    onclick="app.filterLB('all')">All Time</button>
+          <button class="lb-filter"        data-diff="easy"   onclick="app.filterLB('easy')">Easy</button>
+          <button class="lb-filter"        data-diff="medium" onclick="app.filterLB('medium')">Medium</button>
+          <button class="lb-filter"        data-diff="hard"   onclick="app.filterLB('hard')">Hard</button>
+        </div>
+
+        <table class="lb-table" aria-label="High scores">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Player</th>
+              <th>Score</th>
+              <th>Difficulty</th>
+              <th>Attempts</th>
+              <th>Time</th>
+            </tr>
+          </thead>
+          <tbody id="lb-tbody">
+            <!-- populated by game.js -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="lb-sidebar">
+        <div class="s-card">
+          <div class="s-card-title">🥇 Personal Best</div>
+          <div class="pb-wrap">
+            <div class="pb-num" id="lb-pb">0</div>
+            <div class="pb-lbl">Best Score Ever</div>
+          </div>
+          <button class="btn btn-primary btn-block" onclick="app.navigate('play')" style="margin-top:1rem;">
+            Beat It! 🎯
+          </button>
+        </div>
+
+        <div class="s-card">
+          <div class="s-card-title">📊 Your Stats</div>
+          <div class="s-row"><span>Games Played</span><span class="s-val" id="lb-played">0</span></div>
+          <div class="s-row"><span>Games Won</span>   <span class="s-val success" id="lb-won">0</span></div>
+          <div class="s-row"><span>Win Rate</span>    <span class="s-val" id="lb-winrate">0%</span></div>
+          <div class="s-row"><span>Best Score</span>  <span class="s-val gold" id="lb-best">0</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer" style="margin-top:4rem;">
+    <div class="container">
+      <div class="footer-bottom">
+        <p>© 2025 The Perfect Guess. All rights reserved.</p>
+        <p>Made with ❤️ for number lovers</p>
+      </div>
+    </div>
+  </footer>
+
+</section><!-- /leaderboard -->
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     SECTION: PREMIUM
+═══════════════════════════════════════════════════════════ -->
+<section id="sec-premium" class="section premium-section" aria-label="Premium plans">
+  <div class="container">
+
+    <div class="sec-head">
+      <div class="premium-badge">✨ Premium Plans</div>
+      <h1>Unlock Your <span class="gradient-text">Full Potential</span></h1>
+      <p>Upgrade for exclusive features, no ads, and elite bragging rights</p>
+    </div>
+
+    <!-- Pricing Cards -->
+    <div class="pricing-grid">
+
+      <!-- Free -->
+      <div class="price-card">
+        <div class="plan-name">Free</div>
+        <div class="plan-price"><span>$0</span><small>/month</small></div>
+        <ul class="plan-feats">
+          <li class="yes">✅ Easy, Medium, Hard modes</li>
+          <li class="yes">✅ Basic statistics</li>
+          <li class="yes">✅ Local leaderboard</li>
+          <li class="yes">✅ Sound effects</li>
+          <li class="yes">✅ Progress bar</li>
+          <li class="no">❌ Extreme mode (1–1000)</li>
+          <li class="no">❌ Ad-free experience</li>
+          <li class="no">❌ Advanced analytics</li>
+          <li class="no">❌ Custom themes</li>
+        </ul>
+        <button class="btn btn-outline btn-block" onclick="app.navigate('play')">
+          Play Free
+        </button>
+      </div>
+
+      <!-- Pro (featured) -->
+      <div class="price-card featured">
+        <div class="pop-badge">🔥 Most Popular</div>
+        <div class="plan-name">Pro</div>
+        <div class="plan-price"><span>$4.99</span><small>/month</small></div>
+        <ul class="plan-feats">
+          <li class="yes">✅ Everything in Free</li>
+          <li class="yes">✅ Extreme mode (1–1000)</li>
+          <li class="yes">✅ Ad-free experience</li>
+          <li class="yes">✅ Advanced analytics</li>
+          <li class="yes">✅ 5 custom themes</li>
+          <li class="yes">✅ Global leaderboard</li>
+          <li class="yes">✅ Hint system</li>
+          <li class="no">❌ Team challenges</li>
+          <li class="no">❌ Priority support</li>
+        </ul>
+        <button class="btn btn-primary btn-block" onclick="app.showPayment('pro')">
+          Get Pro →
+        </button>
+      </div>
+
+      <!-- Enterprise -->
+      <div class="price-card">
+        <div class="plan-name">Enterprise</div>
+        <div class="plan-price"><span>$19.99</span><small>/month</small></div>
+        <ul class="plan-feats">
+          <li class="yes">✅ Everything in Pro</li>
+          <li class="yes">✅ Team challenges</li>
+          <li class="yes">✅ Custom difficulty range</li>
+          <li class="yes">✅ 20+ themes</li>
+          <li class="yes">✅ Priority support</li>
+          <li class="yes">✅ API access</li>
+          <li class="yes">✅ White label option</li>
+          <li class="yes">✅ Analytics dashboard</li>
+          <li class="yes">✅ Embed on your site</li>
+        </ul>
+        <button class="btn btn-outline btn-block" onclick="app.showPayment('enterprise')">
+          Contact Us →
+        </button>
+      </div>
+
+    </div>
+
+    <!-- FAQ -->
+    <div class="faq-section">
+      <h2>Frequently Asked Questions</h2>
+      <div class="faq-grid">
+        <div class="faq-item">
+          <h4>Is the free plan really free?</h4>
+          <p>Yes! The free plan has no time limit and includes all basic features including three difficulty modes and a local leaderboard.</p>
+        </div>
+        <div class="faq-item">
+          <h4>Can I cancel anytime?</h4>
+          <p>Absolutely. Cancel your subscription at any time — no questions asked, no lock-in period.</p>
+        </div>
+        <div class="faq-item">
+          <h4>How is the score calculated?</h4>
+          <p>Score = Max Range − Number of Attempts. For example, on Medium (1–100) with 5 guesses your score is 95. Fewer guesses = higher score!</p>
+        </div>
+        <div class="faq-item">
+          <h4>Is there a mobile app?</h4>
+          <p>The web app is fully responsive and works perfectly on all mobile browsers. Native iOS and Android apps are coming soon!</p>
+        </div>
+        <div class="faq-item">
+          <h4>What payment methods are accepted?</h4>
+          <p>We accept all major credit/debit cards via Stripe, and PayPal. All payments are processed securely.</p>
+        </div>
+        <div class="faq-item">
+          <h4>What is Extreme mode?</h4>
+          <p>Extreme mode expands the range to 1–1000, dramatically increasing the challenge. It's available exclusively to Pro and Enterprise subscribers.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer" style="margin-top:4rem;">
+    <div class="container">
+      <div class="footer-bottom">
+        <p>© 2025 The Perfect Guess. All rights reserved.</p>
+        <p>Made with ❤️ for number lovers</p>
+      </div>
+    </div>
+  </footer>
+
+</section><!-- /premium -->
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     MODAL: WIN
+═══════════════════════════════════════════════════════════ -->
+<div class="overlay" id="win-modal" role="dialog" aria-modal="true" aria-labelledby="win-title">
+  <div class="modal">
+    <div class="modal-confetti" id="modal-confetti" aria-hidden="true"></div>
+    <div class="modal-bar success"></div>
+
+    <div class="modal-head">
+      <h2 id="win-title">🎉 You Win!</h2>
+    </div>
+
+    <div class="modal-body">
+      <p>You guessed the secret number correctly!</p>
+
+      <div class="win-grid">
+        <div class="win-stat">
+          <span class="win-stat-v" id="win-number">—</span>
+          <span class="win-stat-l">Secret Number</span>
+        </div>
+        <div class="win-stat">
+          <span class="win-stat-v" id="win-attempts">—</span>
+          <span class="win-stat-l">Attempts</span>
+        </div>
+        <div class="win-stat">
+          <span class="win-stat-v" id="win-time">—</span>
+          <span class="win-stat-l">Time Taken</span>
+        </div>
+        <div class="win-stat hl">
+          <span class="win-stat-v" id="win-score">—</span>
+          <span class="win-stat-l">Your Score</span>
+        </div>
+      </div>
+
+      <div class="record-banner hidden" id="record-banner">
+        🏆 NEW HIGH SCORE!
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-primary" onclick="app.newGame(); closeModal('win-modal')">
+        🎲 Play Again
+      </button>
+      <button class="btn btn-ghost" onclick="app.navigate('leaderboard'); closeModal('win-modal')">
+        🏆 Leaderboard
+      </button>
+      <button class="btn btn-outline" onclick="closeModal('win-modal')">
+        ✖ Close
+      </button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     MODAL: PAYMENT
+═══════════════════════════════════════════════════════════ -->
+<div class="overlay" id="pay-modal" role="dialog" aria-modal="true" aria-labelledby="pay-modal-title">
+  <div class="modal">
+    <div class="modal-bar premium"></div>
+
+    <div class="modal-head">
+      <h2 id="pay-modal-title">✨ Upgrade to <span id="pay-plan-name">Pro</span></h2>
+    </div>
+
+    <div class="modal-body">
+      <p>Complete your payment securely below</p>
+      <div class="pay-amount" id="pay-plan-price">$4.99<small style="-webkit-text-fill-color:var(--text-muted);font-size:1rem;">/month</small></div>
+
+      <div class="pay-btns">
+        <button class="btn-paypal"
+          onclick="alert('PayPal integration coming soon! This is a demo.')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M20.067 8.478c.492.315.844.825.96 1.49.367 2.077-.697 4.396-2.74 5.27-.99.426-2.11.548-3.19.548H14.08c-.25 0-.462.18-.502.428l-.652 4.13a.5.5 0 01-.494.427H9.984a.25.25 0 01-.247-.29l1.788-11.33a.5.5 0 01.494-.43h4.79c1.028 0 2.086.22 2.854.678l.404.08z"/><path d="M7.376 4.5H12.9c1.28 0 2.582.284 3.508.893.927.608 1.37 1.595 1.238 2.82-.023.22-.058.44-.108.656-1.04 4.49-4.53 5.63-9.003 5.63H6.5a.5.5 0 00-.493.424L5.1 21h-2.1a.25.25 0 01-.247-.29L5.6 4.93A.5.5 0 016.09 4.5h1.286z"/></svg>
+          Pay with PayPal
+        </button>
+        <button class="btn-card"
+          onclick="alert('Stripe integration coming soon! This is a demo.')">
+          💳 Pay with Card
+        </button>
+      </div>
+
+      <p class="pay-note">🔒 Secure payment. Cancel anytime. No hidden fees.</p>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal('pay-modal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+
+<script src="game.js"></script>
+</body>
+</html>
